@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import { RouterConfig } from './RouterConfig'
+import { getCurrentUser, logout } from './service/auth.service'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+   const [currentUser, setCurrentUser] = useState<any>(null)
+   const [loading, setLoading] = useState<boolean>(true)
+
+   useEffect(() => {
+      getCurrentUser().then((user) => {
+         // console.log('currentUser', user)
+         setCurrentUser(user.user)
+         setLoading(false)
+      })
+   }, [])
+
+   return (
+      <>
+         {(!loading&&currentUser) && (
+            <>
+               {/* <button onClick={logout}>logout</button> */}
+            </>
+         )}
+         <RouterConfig />
+      </>
+   )
 }
 
-export default App;
+export default App
