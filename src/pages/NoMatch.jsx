@@ -1,8 +1,10 @@
-import React from 'react'
+import { Center, Text, Title } from '@mantine/core'
 
 const NoMatch = () => {
   return (
-    <div>404</div>
+    <Center sx={{height: '100vh'}}>
+      <Title>404: <Text span color='gray.6'>PageNotFound</Text></Title>
+    </Center>
   )
 }
 
