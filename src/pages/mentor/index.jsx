@@ -68,11 +68,11 @@ const Mentor = () => {
                   <h1>メンターダッシュボード</h1>
                </Grid.Col>
                <Grid.Col span='content'>
-                  <Button color='teal' onClick={() => setOpened(true)}>新規キャンプ</Button>
+                  <Button color='teal' onClick={() => setOpened(true)}>キャンプ作成</Button>
                </Grid.Col>
             </Grid>
 
-            <Modal opened={opened} onClose={() => setOpened(false)} title='新規キャンプ'>
+            <Modal opened={opened} onClose={() => setOpened(false)} title='キャンプ作成'>
                <NewCamp submit={submitCreateCamp} />
             </Modal>
 
