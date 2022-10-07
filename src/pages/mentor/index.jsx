@@ -87,7 +87,7 @@ const Mentor = () => {
                   </tr>
                </thead>
                <tbody>
-                  {camps.length ? (
+                  {camps.length > 0 ? (
                      raws
                   ) : (
                      <tr>

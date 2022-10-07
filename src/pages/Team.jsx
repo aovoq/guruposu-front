@@ -41,6 +41,8 @@ const Team = () => {
          setTeam(res.team)
          setPosts(res.posts)
          setMembers(res.members)
+      } else {
+         navigate('/404')
       }
    }
 
@@ -140,7 +142,7 @@ const Team = () => {
                      </Grid>
                   </Box>
                   <Box>
-                     {posts.length &&
+                     {posts.length > 0 ? (
                         posts.map((post) => (
                            <Box
                               key={post.id}
@@ -176,13 +178,18 @@ const Team = () => {
                                  </Grid.Col>
                               </Grid>
                            </Box>
-                        ))}
+                        ))
+                     ) : (
+                        <Box sx={{ background: '#f6f6f6', borderRadius: '15px', width: '100%' }} p='20px' mt='20px'>
+                           投稿が有りません
+                        </Box>
+                     )}
                   </Box>
                </Grid.Col>
                <Grid.Col span='content'>
                   <Box sx={{ background: '#f6f6f6', borderRadius: '15px', width: '250px' }} p='15px'>
                      <Title order={3}>Members</Title>
-                     {members.length &&
+                     {members.length > 0 ? (
                         members.map((member) => (
                            <Box key={member.id} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }} mt='sm'>
                               <Box
@@ -202,7 +209,12 @@ const Team = () => {
                               </Box>
                               <p>{member.name}</p>
                            </Box>
-                        ))}
+                        ))
+                     ) : (
+                        <Box sx={{ background: '#f6f6f6', borderRadius: '15px', width: '100%' }} p='20px' mt='20px'>
+                           メンバーがいません
+                        </Box>
+                     )}
                   </Box>
                </Grid.Col>
             </Grid>

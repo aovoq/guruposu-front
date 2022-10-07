@@ -89,7 +89,7 @@ const CampPage = () => {
                   </tr>
                </thead>
                <tbody>
-                  {campTeams.length ? (
+                  {campTeams.length > 0 ? (
                      campTeams.map((team) => (
                         <tr key={team.id}>
                            <td>{team.alphabet.toUpperCase()}</td>
