@@ -211,8 +211,9 @@ const Team = () => {
                                     {post.image_urls.length !== 0 && (
                                        <Box mt='10px'>
                                           <Image
-                                             src='http://res.cloudinary.com/aovoq/image/upload/v1665282987/fexzhr3lbnngxzgxbq76.png'
-                                             sx={{ maxWidth: '100%' }}
+                                             src={post.image_urls}
+                                             radius='md'
+                                             sx={{ maxWidth: '100%'}}
                                           />
                                        </Box>
                                     )}
