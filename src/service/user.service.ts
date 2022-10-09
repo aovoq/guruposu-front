@@ -34,7 +34,7 @@ export const mentorLogin = async ({ email, password }: any) => {
          }),
       })
       const data = await res.json()
-      localStorage.setItem('token', data.token)
+      data.status === 'success' && localStorage.setItem('token', data.token)
       return data
    } catch (err) {
       console.error(err)

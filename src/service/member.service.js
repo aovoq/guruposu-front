@@ -13,8 +13,7 @@ export const memberRegister = async ({ name, pass, team_unique_id }) => {
          }),
       })
       const data = await res.json()
-      console.log(data)
-      if (data.status === 'success') localStorage.setItem('token', data.token)
+      data.status === 'success' && localStorage.setItem('token', data.token)
       return data
    } catch (err) {
       console.error(err)
@@ -33,7 +32,7 @@ export const memberLogin = async ({ pass, team_unique_id }) => {
          }),
       })
       const data = await res.json()
-      if (data.status === 'success') localStorage.setItem('token', data.token)
+      data.status === 'success' && localStorage.setItem('token', data.token)
       return data
    } catch (err) {
       console.error(err)

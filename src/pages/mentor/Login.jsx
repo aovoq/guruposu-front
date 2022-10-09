@@ -29,7 +29,7 @@ const Login = () => {
 
    const handleLogin = async (values) => {
       const res = await mentorLogin(values)
-      console.log(res.message)
+      console.log(res)
       if (res.status === 'success') {
          navigate('/mentor')
       } else {

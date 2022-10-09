@@ -1,11 +1,12 @@
-import { Container, Table, Modal, Button, Header, Group, Title } from '@mantine/core'
+import { Container, Table, Modal, Button, Header, Group, Title, Grid, Anchor } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getCamp } from '../../service/camp.service'
+import { getCamp, updateCamp } from '../../service/camp.service'
 import NewTeamModal from '../../components/NewTeamModal'
-import { createTeam } from '../../service/team.service'
+import { createTeam, updateTeam } from '../../service/team.service'
 import { Repeat, Send } from 'react-feather'
 import UpdateTeamModal from '../../components/UpdateTeamModal'
+import UpdateCampModal from '../../components/UpdateCampModal'
 
 const CampPage = () => {
    const params = useParams()
@@ -14,6 +15,7 @@ const CampPage = () => {
    const [campTeams, setCampTeams] = useState([])
    const [opened, setOpened] = useState(false)
    const [selectTeam, setSelectTeam] = useState(false)
+   const [campOpened, setCampOpened] = useState(false)
 
    const getCampData = async () => {
       const campData = await getCamp(params.id)
@@ -45,10 +47,18 @@ const CampPage = () => {
       getCampData()
    }, [])
 
-   const updateTeam = async (values) => {
+   const submitUpdateTeam = async (values) => {
       const res = await updateTeam(values)
       if (res.status === 'success') {
          setSelectTeam(false)
+         getCampData()
+      }
+   }
+
+   const submitUpdateCamp = async (values) => {
+      const res = await updateCamp(values)
+      if (res.status === 'success') {
+         setCampOpened(false)
          getCampData()
       }
    }
@@ -65,7 +75,13 @@ const CampPage = () => {
          </Header>
          <Container>
             <h1>キャンプ詳細ページ</h1>
-            <h2>{camp.name}</h2>
+            <Grid justify='space-between' sx={{padding: '8px'}}>
+               <h2>{camp.name}</h2>
+               <Button onClick={() => setCampOpened(true)}>キャンプ情報更新</Button>
+               <Modal opened={campOpened} onClose={() => setCampOpened(false)} title='キャンプ情報更新'>
+                  <UpdateCampModal submit={submitUpdateCamp} camp={camp} />
+               </Modal>
+            </Grid>
             <p>{camp.description}</p>
             <p>
                {camp.start_date} - {camp.end_date}
@@ -96,7 +112,7 @@ const CampPage = () => {
                            <td>{team.name}</td>
                            <td>{team.description}</td>
                            <td>{team.color}</td>
-                           <td>{team.unique_id}</td>
+                           <td><Anchor component={Link} to={`/t/${team.unique_id}`}>{team.unique_id}</Anchor></td>
                            <td>
                               <Button color='teal' variant='light' onClick={() => setSelectTeam(team)}>
                                  <Repeat size='15px' />
@@ -113,7 +129,7 @@ const CampPage = () => {
             </Table>
 
             <Modal opened={selectTeam} onClose={() => setSelectTeam(false)} title='チームアップデート'>
-               <UpdateTeamModal submit={updateTeam} selectTeam={selectTeam} />
+               <UpdateTeamModal submit={submitUpdateTeam} selectTeam={selectTeam} />
             </Modal>
          </Container>
       </>

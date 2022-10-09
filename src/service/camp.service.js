@@ -37,7 +37,28 @@ export const deleteCamp = (id) => {
       .then((data) => console.log(data))
 }
 
-export const updateCamp = () => {}
+export const updateCamp = async ({ name, location, description, start_date, end_date, camp_id }) => {
+   try {
+      const res = await fetch(`${API_URL}/admin/camp/${camp_id}`, {
+         method: 'PUT',
+         headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + localStorage.getItem('token'),
+         },
+         body: JSON.stringify({
+            name,
+            location,
+            description,
+            start_date,
+            end_date,
+         }),
+      })
+      const data = await res.json()
+      return data
+   } catch (err) {
+      console.error(err)
+   }
+}
 
 export const getCamps = async () => {
    try {

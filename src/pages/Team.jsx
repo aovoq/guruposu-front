@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { createPost } from '../service/post.service'
 import { getTeamAlldata } from '../service/team.service'
-import { Send } from 'react-feather'
-import { Box, Button, Container, Grid, Group, Header, Text, Textarea, Title } from '@mantine/core'
+import { Image as ImageIcon, Send } from 'react-feather'
+import { Box, Button, Container, FileButton, Grid, Group, Header, Text, Textarea, Title, Image } from '@mantine/core'
 import { getCurrentUser } from '../service/user.service'
 import { useForm } from '@mantine/form'
 
@@ -18,6 +18,7 @@ const Team = () => {
       initialValues: {
          body: '',
          team_unique_id: params.unique_id,
+         image: undefined,
       },
       validate: {
          body: (value) => (value.length < 1 ? 'Post body must have at least 1 letter' : null),
@@ -25,9 +26,12 @@ const Team = () => {
    })
 
    useEffect(() => {
-      if (!localStorage.getItem('token')) navigate(`/t/${params.unique_id}/welcome`)
-      getCurrentUserData()
-      getTeamData()
+      if (!localStorage.getItem('token')) {
+         navigate(`/t/${params.unique_id}/welcome`)
+      } else {
+         getCurrentUserData()
+         getTeamData()
+      }
    }, [])
 
    const getCurrentUserData = async () => {
@@ -40,6 +44,7 @@ const Team = () => {
       if (res.status === 'success') {
          setTeam(res.team)
          setPosts(res.posts)
+         console.log(res.posts)
          setMembers(res.members)
       } else {
          navigate('/404')
@@ -47,9 +52,23 @@ const Team = () => {
    }
 
    const submitTeamPost = async (values) => {
-      const res = await createPost(values)
-      if (res.status === 'success') {
-         getTeamData()
+      if (values.image !== undefined) {
+         const reader = new FileReader()
+         reader.readAsDataURL(values.image)
+         reader.onload = async () => {
+            const res = await createPost({ ...values, image: reader.result })
+            if (res.status === 'success') {
+               form.reset()
+               getTeamData()
+            }
+         }
+      } else {
+         const res = await createPost(values)
+         console.log(res)
+         if (res.status === 'success') {
+            form.reset()
+            getTeamData()
+         }
       }
    }
 
@@ -72,7 +91,7 @@ const Team = () => {
             </Group>
          </Header>
          <Container size='lg'>
-            <Grid>
+            <Grid sx={{ flexWrap: 'nowrap' }}>
                <Grid.Col span='content'>
                   {' '}
                   <Box sx={{ background: '#f6f6f6', borderRadius: '15px', width: '250px' }} pb='20px'>
@@ -131,8 +150,22 @@ const Team = () => {
                         </Grid.Col>
                         <Grid.Col span='auto' p='0'>
                            <form onSubmit={form.onSubmit((values) => submitTeamPost(values))} onReset={form.onReset}>
-                              <Textarea placeholder='今日の何やった？' {...form.getInputProps('body')} />
+                              <Textarea placeholder='今日は何をした？' {...form.getInputProps('body')} />
                               <Group position='right' mt='xs'>
+                                 <Box>
+                                    <FileButton accept='image/png, image/jpeg' {...form.getInputProps('image')}>
+                                       {(props) => (
+                                          <Button {...props}>
+                                             <ImageIcon />
+                                             {form.values.image ? (
+                                                <Text>{form.values.image.name}</Text>
+                                             ) : (
+                                                <Text>画像</Text>
+                                             )}
+                                          </Button>
+                                       )}
+                                    </FileButton>
+                                 </Box>
                                  <Button type='submit' sx={{ width: '90px' }}>
                                     投稿
                                  </Button>
@@ -175,6 +208,14 @@ const Team = () => {
                                        {convertDate(post.created_at)}
                                     </Text>
                                     <Text size='18px'>{post.body}</Text>
+                                    {post.image_urls.length !== 0 && (
+                                       <Box mt='10px'>
+                                          <Image
+                                             src='http://res.cloudinary.com/aovoq/image/upload/v1665282987/fexzhr3lbnngxzgxbq76.png'
+                                             sx={{ maxWidth: '100%' }}
+                                          />
+                                       </Box>
+                                    )}
                                  </Grid.Col>
                               </Grid>
                            </Box>
